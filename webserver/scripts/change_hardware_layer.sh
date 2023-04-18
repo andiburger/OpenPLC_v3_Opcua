@@ -16,7 +16,14 @@ if [ "$1" == "blank" ]; then
     echo "Setting Platform"
     echo win > ../scripts/openplc_platform
     echo blank > ../scripts/openplc_driver
-    
+
+elif [ "$1" == "opcua_linux" ]; then
+    echo "Activating OPCUA driver"
+    cp ./hardware_layers/opcua.cpp ./hardware_layer.cpp
+    echo "Setting Platform"
+    echo linux > ../scripts/openplc_platform
+    echo blank_linux > ../scripts/openplc_driver
+
 elif [ "$1" == "blank_linux" ]; then
     echo "Activating Blank driver"
     cp ./hardware_layers/blank.cpp ./hardware_layer.cpp

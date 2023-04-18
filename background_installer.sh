@@ -9,6 +9,7 @@ if [ $# -eq 0 ]; then
     echo "Usage: ./install.sh [platform]   where [platform] can be"
     echo "  win           Install OpenPLC on Windows over Cygwin"
     echo "  linux         Install OpenPLC on a Debian-based Linux distribution"
+    echo "  linux_opcua   Install OpenPLC on a Debian-based Linux distribution with OPC UA support"
     echo "  docker        Install OpenPLC in a Docker container"
     echo "  rpi           Install OpenPLC on a Raspberry Pi"
     echo "  neuron        Install OpenPLC on a UniPi Neuron PLC"
@@ -320,6 +321,49 @@ elif [ "$1" == "linux" ]; then
     ./compile_program.sh blank_program.st
     cp ./start_openplc.sh ../../
 
+elif [ "$1" == "linux_opcua" ]; then
+
+    echo "Installing OpenPLC on Linux"
+    if [ "$2" == "ethercat" ]; then
+        echo "including EtherCAT"
+        ETHERCAT_INSTALL="install"
+        echo ethercat > webserver/scripts/ethercat
+    else
+        echo "" > webserver/scripts/ethercat
+    fi
+    linux_install_deps sudo
+    
+    install_py_deps
+    install_py_deps "sudo -H"
+
+    install_all_libs sudo
+    
+    #Detecting OS type
+    OS_TYPE=""
+    OS=$(awk '/NAME=/' /etc/*-release | sed -n '1 p' | cut -d= -f2 | cut -d\" -f2 | cut -d" " -f1)
+
+    if [ "$OS" = "Fedora" ]; then
+        OS_TYPE="yum"
+    elif [ "$OS" = "CentOS" ]; then
+        OS_TYPE="yum"
+    elif [ "$OS" = "Red" ]; then
+        OS_TYPE="yum"
+    else
+        OS_TYPE="apt"
+    fi
+    
+    #Fix for Fedora
+    if [ "$OS_TYPE" = "yum" ]; then
+        sudo cp /usr/local/lib/pkgconfig/libmodbus.pc /usr/share/pkgconfig/
+        sudo cp /usr/local/lib/lib*.* /lib64/
+    fi
+    
+    echo ""
+    echo "[FINALIZING]"
+    cd webserver/scripts
+    ./change_hardware_layer.sh opcua_linux
+    ./compile_program.sh blank_program.st
+    cp ./start_openplc.sh ../../
 
 elif [ "$1" == "docker" ]; then
     echo "Installing OpenPLC on Linux inside Docker"
