@@ -3,8 +3,19 @@ PROGRAM prog0
     var_in : BOOL;
     var_out : BOOL;
   END_VAR
+  VAR
+    IN_StartButton AT %IX0.0 : BOOL;
+END_VAR
+VAR
+    IN_StopButton AT %IX1.0 :  BOOL;
+END_VAR
 
-  var_out := var_in;
+VAR
+    OUT_MotorControl AT %QX2.0 : BOOL;
+    OUT_StatusIndicator AT %QX3.0 : BOOL;
+END_VAR
+var_out := var_in;
+OUT_MotorControl := IN_StartButton;
 END_PROGRAM
 
 
