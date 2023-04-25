@@ -137,9 +137,6 @@ extern uint16_t pstorage_polling;
 extern time_t start_time;
 extern time_t end_time;
 
-//opcua.cpp
-void opcuaStartServer(int port);
-
 //modbus.cpp
 int processModbusMessage(unsigned char *buffer, int bufferSize);
 void mapUnusedIO();
@@ -158,7 +155,8 @@ void updateBuffersOut_MB();
 
 //dnp3.cpp
 void dnp3StartServer(int port);
-
+//opcua.cpp
+void opcuaStartServer(int port);
 //persistent_storage.cpp
 void startPstorage();
 int readPersistentStorage();

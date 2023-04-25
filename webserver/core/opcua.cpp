@@ -1,11 +1,17 @@
 #include <open62541/server.h>
 #include "ladder.h"
 #include <string>
+#include <vector>
+#include <iostream>
 
 using namespace std;
 
 static unsigned char log_msg[1000];
-
+vector<vector<UA_NodeId>> digitalInputs;
+vector<vector<UA_NodeId>> digitalOutputs;
+vector<UA_NodeId> analogInputs;
+vector<UA_NodeId> analogOutputs;
+UA_Server *server;
 
 
 int buildInformationModel(UA_Server *server)
@@ -86,13 +92,14 @@ int buildInformationModel(UA_Server *server)
                             UA_NODEID_NUMERIC(0, UA_NS0ID_BASEOBJECTTYPE),
                             oAttrAOutputs, NULL, &aoutputsId);
     //UA_ObjectAttributes_clear(&oAttrAOutputs);
-    for (int i = 0; i < 100; ++i) 
+   for (int i = 0; i < 100; ++i) 
     {
         for (int j = 0; j < 8; ++j) 
         {   /* Digital Inputs are created here */
             if (bool_input[i][j]) {
                 UA_VariableAttributes boolInputAttr = UA_VariableAttributes_default;
                 UA_Boolean status;
+                UA_NodeId tmpNodeId;
                 if (*bool_input[i][j]) 
                     status = true;
                 else 
@@ -106,12 +113,14 @@ int buildInformationModel(UA_Server *server)
                                         UA_NODEID_NUMERIC(0, UA_NS0ID_HASCOMPONENT),
                                         UA_QUALIFIEDNAME(1, (char*)name.c_str()),
                                         UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE),
-                                        boolInputAttr, NULL, NULL);
-                        }
+                                        boolInputAttr, NULL, &tmpNodeId);
+                digitalInputs[i][j]=tmpNodeId; // adding node id to node store
+            }
             /* Digital Outputs are created here */
             if (bool_output[i][j]) {
                 UA_VariableAttributes boolOutputAttr = UA_VariableAttributes_default;
                 UA_Boolean status;
+                UA_NodeId tmpNodeId;
                 if (*bool_input[i][j]) 
                     status = true;
                 else 
@@ -125,11 +134,13 @@ int buildInformationModel(UA_Server *server)
                                         UA_NODEID_NUMERIC(0, UA_NS0ID_HASCOMPONENT),
                                         UA_QUALIFIEDNAME(1, (char*)name.c_str()),
                                         UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE),
-                                        boolOutputAttr, NULL, NULL);
+                                        boolOutputAttr, NULL, &tmpNodeId);
+                digitalOutputs[i][j]=tmpNodeId;  // add node id to digital output node store
             }
         }
         /* Analog inputs are created here */
        if (int_input[i] != NULL) {
+            UA_NodeId tmpNodeId;
             UA_VariableAttributes intInputAttr = UA_VariableAttributes_default;
             auto name = "%%IW"+std::to_string(i);
             UA_UInt16 value = *int_input[i];
@@ -141,10 +152,12 @@ int buildInformationModel(UA_Server *server)
                                     UA_NODEID_NUMERIC(0, UA_NS0ID_HASCOMPONENT),
                                     UA_QUALIFIEDNAME(1, (char*)name.c_str()),
                                     UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE),
-                                    intInputAttr, NULL, NULL);
+                                    intInputAttr, NULL, &tmpNodeId);
+            analogInputs.push_back(tmpNodeId); // add node id to analog input node store
         }
         /* Analog outputs are created here */
         if (int_output[i] != NULL) {
+            UA_NodeId tmpNodeId;
             UA_VariableAttributes outInputAttr = UA_VariableAttributes_default;
             auto name = "%%QW"+std::to_string(i);
             UA_UInt16 value = *int_output[i];
@@ -156,7 +169,8 @@ int buildInformationModel(UA_Server *server)
                                     UA_NODEID_NUMERIC(0, UA_NS0ID_HASCOMPONENT),
                                     UA_QUALIFIEDNAME(1, (char*)name.c_str()),
                                     UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE),
-                                    outInputAttr, NULL, NULL);
+                                    outInputAttr, NULL, &tmpNodeId);
+            analogOutputs.push_back(tmpNodeId);
         }
     }
     return 0;
@@ -164,12 +178,31 @@ int buildInformationModel(UA_Server *server)
 
 void opcuaStartServer(int port)
 {
-    UA_Server *server = UA_Server_new();
+    digitalInputs = {};
+    digitalOutputs = {};
+    analogInputs = {};
+    analogOutputs = {};
+    server = UA_Server_new();
     unsigned char log_msg[1000];
-
+    for (int i = 0; i < 100; ++i) 
+    {/* just for initialization of the multidimensional node store */
+        vector<UA_NodeId> d = {};
+        vector<UA_NodeId> d0 = {};
+        digitalInputs.push_back(d);
+        digitalOutputs.push_back(d0);
+        for (int j = 0; j < 8; ++j) {
+            UA_NodeId tmp;
+            digitalInputs[i].push_back(tmp);
+            digitalOutputs[i].push_back(tmp);
+        }
+    }
     if (buildInformationModel(server))
     {
         sprintf((char*)log_msg, "OPC UA Server: error creating OPC UA information model\n");
+        log(log_msg);
+    }
+    else {
+        sprintf((char*)log_msg, "OPC UA Server: created OPC UA information model successfully\n");
         log(log_msg);
     }
 
