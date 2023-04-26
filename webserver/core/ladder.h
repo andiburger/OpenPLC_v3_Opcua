@@ -157,6 +157,7 @@ void updateBuffersOut_MB();
 void dnp3StartServer(int port);
 //opcua.cpp
 void opcuaStartServer(int port);
+void stopHandler();
 //persistent_storage.cpp
 void startPstorage();
 int readPersistentStorage();

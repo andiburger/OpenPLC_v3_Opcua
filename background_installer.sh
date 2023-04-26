@@ -55,6 +55,21 @@ function linux_install_deps {
     $1 python2.7 get-pip.py
 }
 
+function install_opcua_stack {
+    DIR="open62541"
+    if [ -d "$DIR" ]; then
+        echo "open62541 already installed"
+    else
+        ###  install open62541 stack ###
+        $1 git clone https://github.com/open62541/open62541.git
+        mkdir build
+        cd build
+        cmake .. -DBUILD_SHARED_LIBS=ON -D CMAKE_BUILD_TYPE=Release -DUA_LOGLEVEL=100
+        make
+        make install
+    fi
+}
+
 function install_py_deps {
     $1 pip2 install flask
     $1 pip2 install flask-login
@@ -337,6 +352,7 @@ elif [ "$1" == "linux_opcua" ]; then
     install_py_deps "sudo -H"
 
     install_all_libs sudo
+    #install_opcua_stack sudo
     
     #Detecting OS type
     OS_TYPE=""

@@ -591,13 +591,16 @@ void startInteractiveServer(int port)
     }
     
     printf("Shutting down internal threads\n");
+    stopHandler(); // stop OPC UA Server
     run_modbus = 0;
     run_dnp3 = 0;
     run_enip = 0;
     run_pstorage = 0;
+    run_opcua = 0;
     pthread_join(modbus_thread, NULL);
     pthread_join(dnp3_thread, NULL);
     pthread_join(enip_thread, NULL);
+    pthread_join(opcua_thread, NULL);
     
     printf("Closing socket...\n");
     closeSocket(socket_fd);

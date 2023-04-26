@@ -1,4 +1,4 @@
-#include <open62541/server.h>
+#include <open62541.h>
 #include "ladder.h"
 #include <string>
 #include <vector>
@@ -12,6 +12,13 @@ vector<vector<UA_NodeId>> digitalOutputs;
 vector<UA_NodeId> analogInputs;
 vector<UA_NodeId> analogOutputs;
 UA_Server *server;
+
+UA_Boolean running = true;
+
+void stopHandler(){
+    running = false;
+    UA_Server_delete(server);
+} 
 
 
 int buildInformationModel(UA_Server *server)
@@ -206,5 +213,5 @@ void opcuaStartServer(int port)
         log(log_msg);
     }
 
-    UA_StatusCode retval = UA_Server_runUntilInterrupt(server);
+    UA_StatusCode retval = UA_Server_run(server, &running);
 }

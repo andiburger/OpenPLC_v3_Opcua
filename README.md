@@ -22,6 +22,8 @@ Where `[platform]` can be:
 
 `linux` - Install OpenPLC on a Debian-based Linux distribution
 
+`linux_opcua` - Install OpenPLC on a Debian-based Linux distribution with OPC UA stack (open62541)
+
 `docker` - Used by the `Dockerfile` (i.e. doesn't invoke `sudo`)
 
 `rpi` - Install OpenPLC on a Raspberry Pi
