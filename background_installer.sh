@@ -64,7 +64,7 @@ function install_opcua_stack {
         $1 git clone https://github.com/open62541/open62541.git
         mkdir build
         cd build
-        cmake .. -DBUILD_SHARED_LIBS=ON -D CMAKE_BUILD_TYPE=Release -DUA_LOGLEVEL=100
+        cmake .. -DBUILD_SHARED_LIBS=ON -D -DUA_ENABLE_AMALGAMATION=ON CMAKE_BUILD_TYPE=Release -DUA_LOGLEVEL=100
         make
         make install
     fi
