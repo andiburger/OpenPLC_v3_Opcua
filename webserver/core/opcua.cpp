@@ -151,9 +151,9 @@ int buildInformationModel(UA_Server *server)
             UA_VariableAttributes intInputAttr = UA_VariableAttributes_default;
             auto name = "%%IW"+std::to_string(i);
             UA_UInt16 value = *int_input[i];
-            UA_Variant_setScalar(&intInputAttr.value, &value, &UA_TYPES[UA_TYPES_UINT16]);
+            UA_Variant_setScalar(&intInputAttr.value, &value, &UA_TYPES[UA_TYPES_FLOAT]);//TODO change to float due to visualization reasons
             intInputAttr.displayName = UA_LOCALIZEDTEXT("en-US", (char*)name.c_str());
-            intInputAttr.dataType = UA_TYPES[UA_TYPES_UINT16].typeId;
+            intInputAttr.dataType = UA_TYPES[UA_TYPES_FLOAT].typeId;
             intInputAttr.accessLevel = UA_ACCESSLEVELMASK_READ | UA_ACCESSLEVELMASK_WRITE;
             UA_Server_addVariableNode(server, UA_NODEID_NULL, ainputsId,
                                     UA_NODEID_NUMERIC(0, UA_NS0ID_HASCOMPONENT),
@@ -168,9 +168,9 @@ int buildInformationModel(UA_Server *server)
             UA_VariableAttributes outInputAttr = UA_VariableAttributes_default;
             auto name = "%%QW"+std::to_string(i);
             UA_UInt16 value = *int_output[i];
-            UA_Variant_setScalar(&outInputAttr.value, &value, &UA_TYPES[UA_TYPES_UINT16]);
+            UA_Variant_setScalar(&outInputAttr.value, &value, &UA_TYPES[UA_TYPES_FLOAT]);
             outInputAttr.displayName = UA_LOCALIZEDTEXT("en-US", (char*)name.c_str());
-            outInputAttr.dataType = UA_TYPES[UA_TYPES_UINT16].typeId;
+            outInputAttr.dataType = UA_TYPES[UA_TYPES_FLOAT].typeId;
             outInputAttr.accessLevel = UA_ACCESSLEVELMASK_READ | UA_ACCESSLEVELMASK_WRITE;
             UA_Server_addVariableNode(server, UA_NODEID_NULL, aoutputsId,
                                     UA_NODEID_NUMERIC(0, UA_NS0ID_HASCOMPONENT),

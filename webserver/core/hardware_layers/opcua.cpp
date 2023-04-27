@@ -63,6 +63,8 @@ static IEC_LINT last_lint_memory[BUFFER_SIZE];
 
 static unsigned char log_msg[1000];
 
+#define FLOAT_TO_INT(x) ((x)>=0?(int)((x)+0.5):(int)((x)-0.5))
+
 //-----------------------------------------------------------------------------
 // This function is called by the bufferIn and bufferOut methods to access the 
 // UA node store programmatically
@@ -133,11 +135,12 @@ void updateBuffersIn()
 			UA_Variant var;
 			UA_Variant_init(&var);
 			retval = UA_Server_readValue(server, analogInputs[i], &var);
-			if (retval == UA_STATUSCODE_GOOD && UA_Variant_hasScalarType(&var,&UA_TYPES[UA_TYPES_UINT16]))
+			if (retval == UA_STATUSCODE_GOOD && UA_Variant_hasScalarType(&var,&UA_TYPES[UA_TYPES_FLOAT]))
 			{
-				UA_UInt16 rawData = *(UA_Int16 *) var.data;
-				if (last_int_input[i] != rawData) {
-					*int_input[i] = rawData;
+				UA_Float rawData = *(UA_Float *) var.data;
+				int value = FLOAT_TO_INT(rawData);
+				if (last_int_input[i] != value) {
+					*int_input[i] = value;
 					last_int_input[i] = *int_input[i]; 
 					sprintf((char*)log_msg, "OPC UA Server: Analog Input updated\n");
 					log(log_msg);
@@ -183,10 +186,10 @@ void updateBuffersIn()
 			}
 			if (last_int_output[i] != *int_output[i]) 
 			{
-				UA_UInt16 value = *int_output[i];
+				UA_Float value = (float) *int_output[i];
 				UA_Variant var;
 				UA_Variant_init(&var);
-				UA_Variant_setScalar(&var, &value, &UA_TYPES[UA_TYPES_UINT16]);
+				UA_Variant_setScalar(&var, &value, &UA_TYPES[UA_TYPES_FLOAT]);
 				UA_Server_writeValue(server, analogOutputs[i], var);
 				last_int_output[i] = *int_output[i];
 			}
