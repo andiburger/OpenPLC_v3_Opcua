@@ -23,81 +23,85 @@ void stopHandler(){
 
 int buildInformationModel(UA_Server *server)
 {
+    int nIdx=50000;
     //TODO add own namespace
     //TODO free allocations
-    UA_NodeId openPlcId;
+    UA_NodeId openPlcId = UA_NODEID_NUMERIC(0,nIdx);
     UA_ObjectAttributes oAttr = UA_ObjectAttributes_default;
     oAttr.displayName = UA_LOCALIZEDTEXT("en-US", "openPLC");
-    UA_Server_addObjectNode(server, UA_NODEID_NULL,
+    UA_Server_addObjectNode(server, openPlcId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER),
                             UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
                             UA_QUALIFIEDNAME(1, "openPLC"),
                             UA_NODEID_NUMERIC(0, UA_NS0ID_BASEOBJECTTYPE),
-                            oAttr, NULL, &openPlcId);
+                            oAttr, NULL, NULL);
+    nIdx++;
     //UA_ObjectAttributes_clear(&oAttr);
-    UA_NodeId inputsId;//object node for all inputs
+    UA_NodeId inputsId = UA_NODEID_NUMERIC(0,nIdx);//object node for all inputs
     UA_ObjectAttributes oAttrInputs = UA_ObjectAttributes_default;
     oAttrInputs.displayName = UA_LOCALIZEDTEXT("en-US", "Inputs");
-    UA_Server_addObjectNode(server, UA_NODEID_NULL,
+    UA_Server_addObjectNode(server, inputsId,
                             openPlcId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
                             UA_QUALIFIEDNAME(1, "Inputs"),
                             UA_NODEID_NUMERIC(0, UA_NS0ID_BASEOBJECTTYPE),
-                            oAttrInputs, NULL, &inputsId);
+                            oAttrInputs, NULL, NULL);
+    nIdx++;
     //UA_ObjectAttributes_clear(&oAttrInputs);
-    UA_NodeId binputsId;//object node for digital inputs
+    UA_NodeId binputsId  = UA_NODEID_NUMERIC(0,nIdx);//object node for digital inputs
     UA_ObjectAttributes oAttrBInputs = UA_ObjectAttributes_default;
     oAttrBInputs.displayName = UA_LOCALIZEDTEXT("en-US", "Digital Inputs");
-    UA_Server_addObjectNode(server, UA_NODEID_NULL,
+    UA_Server_addObjectNode(server, binputsId,
                             inputsId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
                             UA_QUALIFIEDNAME(1, "Digital Inputs"),
                             UA_NODEID_NUMERIC(0, UA_NS0ID_BASEOBJECTTYPE),
-                            oAttrBInputs, NULL, &binputsId);
+                            oAttrBInputs, NULL, NULL);
     //UA_ObjectAttributes_clear(&oAttrBInputs);
-    
-    UA_NodeId ainputsId;//object node for analog inputs
+    nIdx++;
+    UA_NodeId ainputsId  = UA_NODEID_NUMERIC(0,nIdx);;//object node for analog inputs
     UA_ObjectAttributes oAttrAInputs = UA_ObjectAttributes_default;
     oAttrAInputs.displayName = UA_LOCALIZEDTEXT("en-US", "Analog Inputs");
-    UA_Server_addObjectNode(server, UA_NODEID_NULL,
+    UA_Server_addObjectNode(server, ainputsId,
                             inputsId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
                             UA_QUALIFIEDNAME(1, "Analog Inputs"),
                             UA_NODEID_NUMERIC(0, UA_NS0ID_BASEOBJECTTYPE),
-                            oAttrAInputs, NULL, &ainputsId);
+                            oAttrAInputs, NULL, NULL);
     //UA_ObjectAttributes_clear(&oAttrAInputs);   
-
-    UA_NodeId outputsId;//Object node for all outputs
+    nIdx++;
+    UA_NodeId outputsId = UA_NODEID_NUMERIC(0,nIdx);;//Object node for all outputs
     UA_ObjectAttributes oAttrOutputs = UA_ObjectAttributes_default;
     oAttrOutputs.displayName = UA_LOCALIZEDTEXT("en-US", "Outputs");
-    UA_Server_addObjectNode(server, UA_NODEID_NULL,
+    UA_Server_addObjectNode(server, outputsId,
                             openPlcId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
                             UA_QUALIFIEDNAME(1, "Outputs"),
                             UA_NODEID_NUMERIC(0, UA_NS0ID_BASEOBJECTTYPE),
-                            oAttrOutputs, NULL, &outputsId);
+                            oAttrOutputs, NULL, NULL);
     //UA_ObjectAttributes_clear(&oAttrOutputs);
-
-    UA_NodeId boutputsId;//Object node for digital outputs
+    nIdx++;
+    UA_NodeId boutputsId = UA_NODEID_NUMERIC(0,nIdx);;//Object node for digital outputs
     UA_ObjectAttributes oAttrBOutputs = UA_ObjectAttributes_default;
     oAttrBOutputs.displayName = UA_LOCALIZEDTEXT("en-US", "Digital Outputs");
-    UA_Server_addObjectNode(server, UA_NODEID_NULL,
+    UA_Server_addObjectNode(server, boutputsId,
                             outputsId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
                             UA_QUALIFIEDNAME(1, "Digital Outputs"),
                             UA_NODEID_NUMERIC(0, UA_NS0ID_BASEOBJECTTYPE),
-                            oAttrBOutputs, NULL, &boutputsId);
+                            oAttrBOutputs, NULL, NULL);
     //UA_ObjectAttributes_clear(&oAttrBOutputs);
-
-    UA_NodeId aoutputsId;//Object node for analog outputs
+    nIdx++;
+    UA_NodeId aoutputsId = UA_NODEID_NUMERIC(0,nIdx);;//Object node for analog outputs
     UA_ObjectAttributes oAttrAOutputs = UA_ObjectAttributes_default;
     oAttrAOutputs.displayName = UA_LOCALIZEDTEXT("en-US", "Analog Outputs");
-    UA_Server_addObjectNode(server, UA_NODEID_NULL,
+    UA_Server_addObjectNode(server, aoutputsId,
                             outputsId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
                             UA_QUALIFIEDNAME(1, "Analog Outputs"),
                             UA_NODEID_NUMERIC(0, UA_NS0ID_BASEOBJECTTYPE),
-                            oAttrAOutputs, NULL, &aoutputsId);
+                            oAttrAOutputs, NULL, NULL);
+    nIdx++;
     //UA_ObjectAttributes_clear(&oAttrAOutputs);
    for (int i = 0; i < 100; ++i) 
     {
@@ -106,7 +110,8 @@ int buildInformationModel(UA_Server *server)
             if (bool_input[i][j]) {
                 UA_VariableAttributes boolInputAttr = UA_VariableAttributes_default;
                 UA_Boolean status;
-                UA_NodeId tmpNodeId;
+                UA_NodeId tmpNodeId = UA_NODEID_NUMERIC(0,nIdx);
+                nIdx++;
                 if (*bool_input[i][j]) 
                     status = true;
                 else 
@@ -116,18 +121,19 @@ int buildInformationModel(UA_Server *server)
                 boolInputAttr.displayName = UA_LOCALIZEDTEXT("en-US", (char*)name.c_str());
                 boolInputAttr.dataType = UA_TYPES[UA_TYPES_BOOLEAN].typeId;
                 boolInputAttr.accessLevel = UA_ACCESSLEVELMASK_READ | UA_ACCESSLEVELMASK_WRITE;
-                UA_Server_addVariableNode(server, UA_NODEID_NULL, binputsId,
+                UA_Server_addVariableNode(server, tmpNodeId, binputsId,
                                         UA_NODEID_NUMERIC(0, UA_NS0ID_HASCOMPONENT),
                                         UA_QUALIFIEDNAME(1, (char*)name.c_str()),
                                         UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE),
-                                        boolInputAttr, NULL, &tmpNodeId);
+                                        boolInputAttr, NULL, NULL);
                 digitalInputs[i][j]=tmpNodeId; // adding node id to node store
             }
             /* Digital Outputs are created here */
             if (bool_output[i][j]) {
                 UA_VariableAttributes boolOutputAttr = UA_VariableAttributes_default;
                 UA_Boolean status;
-                UA_NodeId tmpNodeId;
+                UA_NodeId tmpNodeId = UA_NODEID_NUMERIC(0,nIdx);
+                nIdx++;
                 if (*bool_input[i][j]) 
                     status = true;
                 else 
@@ -137,17 +143,18 @@ int buildInformationModel(UA_Server *server)
                 boolOutputAttr.displayName = UA_LOCALIZEDTEXT("en-US", (char*)name.c_str());
                 boolOutputAttr.dataType = UA_TYPES[UA_TYPES_BOOLEAN].typeId;
                 boolOutputAttr.accessLevel = UA_ACCESSLEVELMASK_READ | UA_ACCESSLEVELMASK_WRITE;
-                UA_Server_addVariableNode(server, UA_NODEID_NULL, boutputsId,
+                UA_Server_addVariableNode(server, tmpNodeId, boutputsId,
                                         UA_NODEID_NUMERIC(0, UA_NS0ID_HASCOMPONENT),
                                         UA_QUALIFIEDNAME(1, (char*)name.c_str()),
                                         UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE),
-                                        boolOutputAttr, NULL, &tmpNodeId);
+                                        boolOutputAttr, NULL, NULL);
                 digitalOutputs[i][j]=tmpNodeId;  // add node id to digital output node store
             }
         }
         /* Analog inputs are created here */
        if (int_input[i] != NULL) {
-            UA_NodeId tmpNodeId;
+            UA_NodeId tmpNodeId = UA_NODEID_NUMERIC(0,nIdx);
+            nIdx++;
             UA_VariableAttributes intInputAttr = UA_VariableAttributes_default;
             auto name = "%%IW"+std::to_string(i);
             UA_UInt16 value = *int_input[i];
@@ -155,16 +162,17 @@ int buildInformationModel(UA_Server *server)
             intInputAttr.displayName = UA_LOCALIZEDTEXT("en-US", (char*)name.c_str());
             intInputAttr.dataType = UA_TYPES[UA_TYPES_FLOAT].typeId;
             intInputAttr.accessLevel = UA_ACCESSLEVELMASK_READ | UA_ACCESSLEVELMASK_WRITE;
-            UA_Server_addVariableNode(server, UA_NODEID_NULL, ainputsId,
+            UA_Server_addVariableNode(server, tmpNodeId, ainputsId,
                                     UA_NODEID_NUMERIC(0, UA_NS0ID_HASCOMPONENT),
                                     UA_QUALIFIEDNAME(1, (char*)name.c_str()),
                                     UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE),
-                                    intInputAttr, NULL, &tmpNodeId);
+                                    intInputAttr, NULL, NULL);
             analogInputs.push_back(tmpNodeId); // add node id to analog input node store
         }
         /* Analog outputs are created here */
         if (int_output[i] != NULL) {
-            UA_NodeId tmpNodeId;
+            UA_NodeId tmpNodeId = UA_NODEID_NUMERIC(0,nIdx);
+            nIdx++;
             UA_VariableAttributes outInputAttr = UA_VariableAttributes_default;
             auto name = "%%QW"+std::to_string(i);
             UA_UInt16 value = *int_output[i];
@@ -172,11 +180,11 @@ int buildInformationModel(UA_Server *server)
             outInputAttr.displayName = UA_LOCALIZEDTEXT("en-US", (char*)name.c_str());
             outInputAttr.dataType = UA_TYPES[UA_TYPES_FLOAT].typeId;
             outInputAttr.accessLevel = UA_ACCESSLEVELMASK_READ | UA_ACCESSLEVELMASK_WRITE;
-            UA_Server_addVariableNode(server, UA_NODEID_NULL, aoutputsId,
+            UA_Server_addVariableNode(server, tmpNodeId, aoutputsId,
                                     UA_NODEID_NUMERIC(0, UA_NS0ID_HASCOMPONENT),
                                     UA_QUALIFIEDNAME(1, (char*)name.c_str()),
                                     UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE),
-                                    outInputAttr, NULL, &tmpNodeId);
+                                    outInputAttr, NULL, NULL);
             analogOutputs.push_back(tmpNodeId);
         }
     }

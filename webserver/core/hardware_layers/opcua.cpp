@@ -192,6 +192,8 @@ void updateBuffersIn()
 				UA_Variant_setScalar(&var, &value, &UA_TYPES[UA_TYPES_FLOAT]);
 				UA_Server_writeValue(server, analogOutputs[i], var);
 				last_int_output[i] = *int_output[i];
+				sprintf((char*)log_msg, "OPC UA Server: Analog Output %i updated with value %i \n",i,*int_output[i]);
+        			log(log_msg);
 			}
 		}
 	}
