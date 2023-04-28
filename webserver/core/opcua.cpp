@@ -157,7 +157,7 @@ int buildInformationModel(UA_Server *server)
             nIdx++;
             UA_VariableAttributes intInputAttr = UA_VariableAttributes_default;
             auto name = "%%IW"+std::to_string(i);
-            UA_UInt16 value = *int_input[i];
+            UA_Float value = 0.0f;
             UA_Variant_setScalar(&intInputAttr.value, &value, &UA_TYPES[UA_TYPES_FLOAT]);//TODO change to float due to visualization reasons
             intInputAttr.displayName = UA_LOCALIZEDTEXT("en-US", (char*)name.c_str());
             intInputAttr.dataType = UA_TYPES[UA_TYPES_FLOAT].typeId;
@@ -175,7 +175,7 @@ int buildInformationModel(UA_Server *server)
             nIdx++;
             UA_VariableAttributes outInputAttr = UA_VariableAttributes_default;
             auto name = "%%QW"+std::to_string(i);
-            UA_UInt16 value = *int_output[i];
+            UA_Float value = 0.0f;
             UA_Variant_setScalar(&outInputAttr.value, &value, &UA_TYPES[UA_TYPES_FLOAT]);
             outInputAttr.displayName = UA_LOCALIZEDTEXT("en-US", (char*)name.c_str());
             outInputAttr.dataType = UA_TYPES[UA_TYPES_FLOAT].typeId;
